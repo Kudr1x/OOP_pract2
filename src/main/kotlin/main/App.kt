@@ -1,11 +1,19 @@
-package org.example.main
+package main
 
 import controller.FileController
+import java.io.FileNotFoundException
 
 fun main() {
-    val fileController = FileController("/home/kudrix/IdeaProjects/OOP_pract2/src/main/resources/address.csv")
+    print("Введите название файла: ")
+    val input: String = readlnOrNull().toString()
+    val fileController: FileController
 
-    fileController.getDuplicate()
-    fileController.getFloutCount()
-    fileController.getTime()
+    try {
+        fileController = FileController(input)
+        fileController.getDuplicate()
+        fileController.getFloutCount()
+        fileController.getTime()
+    }catch (e: FileNotFoundException) {
+        println(e.message)
+    }
 }
