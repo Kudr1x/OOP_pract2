@@ -1,9 +1,21 @@
 package controller
 
+import service.CSVFileService
+import service.FileServiceInterface
+import service.XMLFileService
+
 class FileController(path: String): FileControllerInterface {
-    private val duplicates = mutableMapOf<String, Int>()
-    private val floorCount = mutableMapOf<Int, Int>()
-    private val extension = path.substringAfterLast(".")
+    private val service: FileServiceInterface = when (path.substringAfter(".")) {
+        "csv" -> CSVFileService(path)
+        "xml" -> XMLFileService(path)
+        else -> throw IllegalArgumentException("Неизвестный тип: ${path.substringAfter(".")}")
+    }
+
+    private val triple = service.open()
+
+    private val duplicates = triple.first
+    private val floorCount = triple.second
+    private val time = triple.third
 
     override fun getDuplicate() {
         println("Дублирующиеся записи с количеством повторений:")
@@ -20,6 +32,6 @@ class FileController(path: String): FileControllerInterface {
     }
 
     override fun getTime() {
-        TODO("Not yet implemented")
+        println("Время выполнения $time мс")
     }
 }

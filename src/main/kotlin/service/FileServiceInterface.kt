@@ -1,5 +1,5 @@
 package service
 
 interface FileServiceInterface {
-    fun open(path: String)
+    fun open(): Triple<MutableMap<String, Int>, MutableMap<Int, Int>, Long>
 }

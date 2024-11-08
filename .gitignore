@@ -1,5 +1,5 @@
 .gradle
-resources/
+resources/address.csv
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/

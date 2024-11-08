@@ -2,9 +2,10 @@ package service
 
 import model.Address
 import java.io.File
+import kotlin.system.measureTimeMillis
 
-class CSVFileService : FileServiceInterface {
-    override fun open(path: String) {
+class CSVFileService(private val path: String) : FileServiceInterface {
+    override fun open(): Triple<MutableMap<String, Int>, MutableMap<Int, Int>, Long> {
         val lines = File(path).readLines()
 
         val addresses = mutableListOf<Address>()
@@ -13,21 +14,25 @@ class CSVFileService : FileServiceInterface {
 
         var firstLineFlag = true
 
-        lines.forEach { line ->
-            val parts = line.split(";").map {
-                it.trim('"')
-            }
+        val timeTaken = measureTimeMillis {
+            lines.forEach { line ->
+                val parts = line.split(";").map {
+                    it.trim('"')
+                }
 
-            if (firstLineFlag) {
-                firstLineFlag = false
-            }else{
-                if (parts.size == 4) {
-                    val address = Address(parts[0], parts[1], parts[2].toInt(), parts[3].toInt())
-                    addresses.add(address)
-                    duplicates[address.toString()] = duplicates.getOrDefault(address.toString(), 0) + 1
-                    floorCount[address.floor] = floorCount.getOrDefault(address.floor, 0) + 1
+                if (firstLineFlag) {
+                    firstLineFlag = false
+                }else{
+                    if (parts.size == 4) {
+                        val address = Address(parts[0], parts[1], parts[2].toInt(), parts[3].toInt())
+                        addresses.add(address)
+                        duplicates[address.toString()] = duplicates.getOrDefault(address.toString(), 0) + 1
+                        floorCount[address.floor] = floorCount.getOrDefault(address.floor, 0) + 1
+                    }
                 }
             }
         }
+
+        return Triple(duplicates, floorCount, timeTaken)
     }
 }
