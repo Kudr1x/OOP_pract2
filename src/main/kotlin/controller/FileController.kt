@@ -25,9 +25,29 @@ class FileController(path: String): FileControllerInterface {
     }
 
     override fun getFloutCount() {
-        println("Количество этажей в городах:")
-        floorCount.forEach { (floor, count) ->
-            println("$floor этажных зданий: $count")
+        val cityFloorCounts = mutableMapOf<String, MutableMap<Int, Int>>()
+
+        for ((key, count) in floorCount) {
+
+            val (city, floor) = key
+
+            if (city !in cityFloorCounts) {
+                cityFloorCounts[city] = mutableMapOf()
+            }
+
+            cityFloorCounts[city]!![floor] = cityFloorCounts[city]!!.getOrDefault(floor, 0) + count
+        }
+
+        for ((city, counts) in cityFloorCounts) {
+
+            println("Город: $city")
+
+            for (floor in 1..5) {
+                val count = counts.getOrDefault(floor, 0)
+                println("Количество $floor-этажных зданий: $count")
+            }
+
+            println()
         }
     }
 
